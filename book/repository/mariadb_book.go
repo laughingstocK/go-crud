@@ -2,7 +2,8 @@ package repository
 
 import (
 	"database/sql"
-	"go-crud/book"
+
+	"github.com/laughingstocK/go-crud/book"
 )
 
 type mariadbBookRepo struct {
