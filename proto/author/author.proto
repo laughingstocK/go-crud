@@ -1,0 +1,17 @@
+syntax = "proto3";
+option go_package = "github.com/laughingstocK/go-crud/author";
+
+message CreateRequest {
+  string id = 1;
+  string name = 2;
+  string created_at = 3;
+  string updated_at = 4;
+}
+
+message CreateResponse {
+  string message = 1; 
+}
+
+service Author {
+  rpc Create(CreateRequest) returns (CreateResponse);
+}
