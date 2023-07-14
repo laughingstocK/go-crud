@@ -1,0 +1,44 @@
+package main
+
+import (
+	"fmt"
+	"net/http"
+	"time"
+)
+
+func fetchURL(url string, c chan string) {
+	resp, err := http.Get(url)
+	if err != nil {
+		c <- fmt.Sprintf("Error fetching %s: %s", url, err.Error())
+		return
+	}
+	defer resp.Body.Close()
+
+	c <- fmt.Sprintf("Fetched %s successfully", url)
+}
+
+func main() {
+	urls := []string{
+		"https://www.example.com",
+		"https://www.google.com",
+		"https://www.github.com",
+	}
+
+	c := make(chan string)
+
+	for _, url := range urls {
+		go fetchURL(url, c)
+	}
+
+	timeout := time.After(3 * time.Second)
+
+	for i := 0; i < len(urls); i++ {
+		select {
+		case res := <-c:
+			fmt.Println(res)
+		case <-timeout:
+			fmt.Println("Timeout exceeded")
+			return
+		}
+	}
+}

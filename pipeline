@@ -1,0 +1,47 @@
+package main
+
+import "fmt"
+
+func generateNumbers(n int) <-chan int {
+	numbers := make(chan int)
+
+	go func() {
+		defer close(numbers)
+		for i := 1; i <= n; i++ {
+			numbers <- i
+		}
+	}()
+
+	return numbers
+}
+
+func squareNumbers(in <-chan int) <-chan int {
+	squared := make(chan int)
+
+	go func() {
+		defer close(squared)
+		for num := range in {
+			squared <- num * num
+		}
+	}()
+
+	return squared
+}
+
+func sumNumbers(in <-chan int) int {
+	sum := 0
+	for num := range in {
+		sum += num
+	}
+	return sum
+}
+
+func main() {
+	n := 5
+
+	numbers := generateNumbers(n)
+	squaredNumbers := squareNumbers(numbers)
+	result := sumNumbers(squaredNumbers)
+
+	fmt.Printf("Sum of squares from 1 to %d: %d\n", n, result)
+}
