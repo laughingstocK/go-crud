@@ -20,11 +20,11 @@ func NewMariadbAuthorRepo(Conn *sql.DB) author.Repository {
 }
 
 func (m *mariadbAuthorRepo) GetByID(ctx context.Context, id int64) (*models.Author, error) {
-	query := "SELECT id, name FROM Author WHERE id = ?"
+	query := "SELECT id, name, createdAt, updatedAt FROM Author WHERE id = ?"
 	row := m.Conn.QueryRowContext(ctx, query, id)
 
 	var author models.Author
-	err := row.Scan(&author.ID, &author.Name)
+	err := row.Scan(&author.ID, &author.Name, &author.CreatedAt, &author.UpdatedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, fmt.Errorf("author not found")
